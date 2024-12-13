@@ -42,8 +42,10 @@ Devvit.addCustomPostType({
     const [counter, setCounter] = useState(0);
 
     return (
-      <vstack height="100%" width="100%" gap="medium" alignment="center middle">
-        <GameBoard setPage={() => "a"} />
+      <vstack height="100%" gap="medium" alignment="center middle">
+        <vstack width={"260px"} height={100}>
+          <GameBoard setPage={() => "a"} />
+        </vstack>
       </vstack>
     );
   },
