@@ -1,6 +1,8 @@
 // Learn more at developers.reddit.com/docs
 import { Devvit, useState } from "@devvit/public-api";
 import GameBoard from "./screens/gameboard.js";
+import Home from "./screens/home.js";
+import Leaderboard from "./screens/leaderboard.js";
 
 Devvit.configure({
   redditAPI: true,
@@ -8,8 +10,8 @@ Devvit.configure({
 
 // Add a menu item to the subreddit menu for instantiating the new experience post
 Devvit.addMenuItem({
-  label: "Add my post",
-  location: "subreddit",
+  label: "New Guess The Flag Post",
+  location: ["subreddit", "post"],
   forUserType: "moderator",
   onPress: async (_event, context) => {
     const { reddit, ui } = context;
@@ -39,12 +41,27 @@ Devvit.addCustomPostType({
   height: "regular",
   description: "A fun game to guess the flags",
   render: (_context) => {
-    const [counter, setCounter] = useState(0);
+    const [page, setPage] = useState("a");
+
+    let currentPage;
+    switch (page) {
+      case "a":
+        currentPage = <Home setPage={setPage} />;
+        break;
+      case "b":
+        currentPage = <GameBoard setPage={setPage} />;
+        break;
+      case "c":
+        currentPage = <Leaderboard setPage={setPage} />;
+        break;
+      default:
+        currentPage = <Home setPage={setPage} />;
+    }
 
     return (
       <vstack height="100%" gap="medium" alignment="center middle">
         <vstack width={"260px"} height={100}>
-          <GameBoard setPage={() => "a"} />
+          {currentPage}
         </vstack>
       </vstack>
     );

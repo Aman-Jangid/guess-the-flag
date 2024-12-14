@@ -13,11 +13,10 @@ const Home = ({ setPage }: PageProps) => (
     backgroundColor="#0B1315"
     lightBackgroundColor="#FEFFFE"
   >
-    <image url={""} imageHeight={100} imageWidth={160} />
-    <text size="xxlarge">Guess The Flag!</text>
+    <image url={"icon.png"} imageHeight={180} imageWidth={180} />
     <button
       width={70}
-      appearance={"success"}
+      appearance={"primary"}
       icon={"activity"}
       onPress={() => setPage("b")}
     >
@@ -27,7 +26,7 @@ const Home = ({ setPage }: PageProps) => (
       width={70}
       appearance={"bordered"}
       icon={"top"}
-      onPress={() => setPage("b")}
+      onPress={() => setPage("e")}
     >
       Leaderboard
     </button>
