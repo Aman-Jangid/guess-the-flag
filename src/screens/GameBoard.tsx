@@ -2,9 +2,10 @@ import { Devvit } from "@devvit/public-api";
 
 type PageProps = {
   setPage: (page: string) => void;
+  mode: "timer" | "streak";
 };
 
-const GameBoard = ({ setPage }: PageProps) => (
+const GameBoard = ({ setPage, mode }: PageProps) => (
   <vstack
     width="100%"
     height="100%"
@@ -14,13 +15,15 @@ const GameBoard = ({ setPage }: PageProps) => (
     onPress={() => setPage("a")}
   >
     <spacer size="small" />
+    {/* STATS */}
     <hstack
       alignment={"center middle"}
       cornerRadius={"small"}
       width={90}
-      height={12}
+      height={10}
       gap={"small"}
     >
+      {/* question no. */}
       <vstack
         height={100}
         width={30}
@@ -28,14 +31,20 @@ const GameBoard = ({ setPage }: PageProps) => (
         border={"thick"}
         cornerRadius={"small"}
         borderColor={"white"}
-      />
+      >
+        <text size={"medium"} color="orange">
+          1
+        </text>
+        <text size={"medium"}>/256</text>
+      </vstack>
+      {/* mode.?timer */}
       <vstack
         height={100}
         width={20}
         backgroundColor=""
         border={"thick"}
         cornerRadius={"small"}
-        borderColor={"transparent"}
+        borderColor={mode === "streak" ? "transparent" : "white"}
         grow
       />
       <vstack
@@ -48,52 +57,28 @@ const GameBoard = ({ setPage }: PageProps) => (
       />
     </hstack>
     <spacer size="small" />
-
-    <vstack
-      height={40}
-      width={90}
-      backgroundColor=""
-      border={"thick"}
-      cornerRadius={"small"}
-      borderColor={"white"}
-    />
+    {/* FLAG */}
+    <vstack height={36} width={90} alignment="middle center">
+      <image url={"../data/flags/ad.svg"} imageHeight={100} imageWidth={100} />
+    </vstack>
     <spacer size="small" />
-
+    {/* OPTIONS */}
     <vstack
       height={38}
       width={90}
-      backgroundColor=""
-      border={"thick"}
+      alignment="middle center"
       cornerRadius={"small"}
       gap={"small"}
     >
-      <vstack
-        height={60}
-        width={100}
-        backgroundColor=""
-        border={"thick"}
-        cornerRadius={"small"}
-        borderColor={"red"}
-        grow
-      />
-      <vstack
-        height={60}
-        width={100}
-        backgroundColor=""
-        border={"thick"}
-        cornerRadius={"small"}
-        borderColor={"red"}
-        grow
-      />
-      <vstack
-        height={60}
-        width={100}
-        backgroundColor=""
-        border={"thick"}
-        cornerRadius={"small"}
-        borderColor={"red"}
-        grow
-      />
+      <button width={100} appearance="secondary">
+        {mode}
+      </button>
+      <button width={100} appearance="secondary">
+        Scotland
+      </button>
+      <button width={100} appearance="secondary">
+        Ukraine
+      </button>
     </vstack>
   </vstack>
 );

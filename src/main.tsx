@@ -45,7 +45,7 @@ Devvit.addCustomPostType({
   description: "A fun game to guess the flags of countries.",
   render: (_context) => {
     const [page, setPage] = useState<string>("a");
-    const [option, setOption] = useState<optionType>("timer");
+    const [mode, setMode] = useState<optionType>("timer");
 
     let currentPage;
     switch (page) {
@@ -53,10 +53,12 @@ Devvit.addCustomPostType({
         currentPage = <Home setPage={setPage} />;
         break;
       case "b":
-        currentPage = <GameOptions setPage={setPage} setOption={setOption} />;
+        currentPage = (
+          <GameOptions setPage={setPage} setMode={setMode} mode={mode} />
+        );
         break;
       case "c":
-        currentPage = <GameBoard setPage={setPage} />;
+        currentPage = <GameBoard setPage={setPage} mode={mode} />;
         break;
       case "d":
         currentPage = <Leaderboard setPage={setPage} />;

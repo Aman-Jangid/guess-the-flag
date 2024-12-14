@@ -4,18 +4,11 @@ type optionType = "timer" | "streak";
 
 interface PageProps {
   setPage: (page: string) => void;
-  setOption: (option: optionType) => void;
+  mode: optionType;
+  setMode: (option: optionType) => void;
 }
 
-const GameOptions = ({ setPage, setOption }: PageProps) => {
-  const [mode, setMode] = useState("timer");
-
-  // send selected option to the next page
-  const handleOption = (mode: optionType) => {
-    setOption(mode);
-    setPage("c");
-  };
-
+const GameOptions = ({ setPage, setMode, mode }: PageProps) => {
   return (
     <vstack width="100%" height="100%" alignment="middle center" gap="medium">
       <text size="large" weight="bold">
@@ -68,7 +61,7 @@ const GameOptions = ({ setPage, setOption }: PageProps) => {
         width={70}
         appearance={"primary"}
         icon={"star"}
-        onPress={() => handleOption("timer")}
+        onPress={() => setPage("c")}
       >
         Start
       </button>
