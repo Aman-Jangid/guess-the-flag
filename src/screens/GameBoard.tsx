@@ -1,4 +1,4 @@
-import { Devvit } from "@devvit/public-api";
+import { Devvit, svg } from "@devvit/public-api";
 
 type PageProps = {
   setPage: (page: string) => void;
@@ -23,43 +23,103 @@ const GameBoard = ({ setPage, mode }: PageProps) => (
       height={10}
       gap={"small"}
     >
-      {/* question no. */}
-      <vstack
-        height={100}
-        width={30}
-        backgroundColor=""
-        border={"thick"}
-        cornerRadius={"small"}
-        borderColor={"white"}
-      >
-        <text size={"medium"} color="orange">
-          1
-        </text>
-        <text size={"medium"}>/256</text>
-      </vstack>
-      {/* mode.?timer */}
-      <vstack
-        height={100}
-        width={20}
-        backgroundColor=""
-        border={"thick"}
-        cornerRadius={"small"}
-        borderColor={mode === "streak" ? "transparent" : "white"}
-        grow
-      />
-      <vstack
-        height={100}
-        width={30}
-        backgroundColor=""
-        border={"thick"}
-        cornerRadius={"small"}
-        borderColor={"white"}
-      />
+      {mode === "streak" && (
+        <>
+          <hstack
+            height={100}
+            width={40}
+            backgroundColor=""
+            border={"thick"}
+            cornerRadius={"small"}
+            alignment="middle center"
+          >
+            <text size={"large"} weight="bold" color="orange">
+              1
+            </text>
+            <text size={"large"}>/256</text>
+          </hstack>
+          <vstack
+            height={100}
+            backgroundColor="transparent"
+            borderColor="transparent"
+            border={"thick"}
+            cornerRadius={"small"}
+            grow
+          />
+          <hstack
+            height={100}
+            width={40}
+            backgroundColor=""
+            border={"thick"}
+            cornerRadius={"small"}
+            alignment="middle center"
+            gap="small"
+          >
+            <image url="streak.png" imageHeight={20} imageWidth={20} />
+            <text size={"large"} color="white">
+              0
+            </text>
+          </hstack>{" "}
+        </>
+      )}
+      {mode === "timer" && (
+        <>
+          <hstack
+            height={100}
+            width={50}
+            backgroundColor=""
+            border={"thick"}
+            cornerRadius={"small"}
+            alignment="middle center"
+            gap="small"
+          >
+            <hstack gap={"small"} alignment="middle center">
+              <icon name="checkmark" height={20} color="green" />
+              <text size={"large"} weight="bold" color="yellowgreen">
+                5
+              </text>
+            </hstack>
+            <vstack height={100} width={1} border="thin" />
+            <hstack gap={"small"} alignment="middle center">
+              <icon name="close" height={20} color="red" />
+              <text size={"large"} weight="bold" color="orangered">
+                2
+              </text>
+            </hstack>
+          </hstack>
+          <vstack
+            height={100}
+            backgroundColor="transparent"
+            borderColor="transparent"
+            border={"thick"}
+            cornerRadius={"small"}
+            grow
+          />
+          <hstack
+            height={100}
+            width={40}
+            backgroundColor=""
+            border={"thick"}
+            cornerRadius={"small"}
+            alignment="middle center"
+            gap="small"
+          >
+            <image url="timer.png" imageHeight={20} imageWidth={20} />
+            <text size={"large"} color="white" weight="bold">
+              00:00
+            </text>
+          </hstack>{" "}
+        </>
+      )}
     </hstack>
     <spacer size="small" />
     {/* FLAG */}
     <vstack height={36} width={90} alignment="middle center">
-      <image url={"../data/flags/ad.svg"} imageHeight={100} imageWidth={100} />
+      <image
+        url={svg`../data/flags/af.svg`}
+        imageHeight={100}
+        imageWidth={100}
+      />
     </vstack>
     <spacer size="small" />
     {/* OPTIONS */}
@@ -70,13 +130,13 @@ const GameBoard = ({ setPage, mode }: PageProps) => (
       cornerRadius={"small"}
       gap={"small"}
     >
-      <button width={100} appearance="secondary">
+      <button width={100} maxHeight={33} appearance="secondary">
         {mode}
       </button>
-      <button width={100} appearance="secondary">
+      <button width={100} maxHeight={33} appearance="secondary">
         Scotland
       </button>
-      <button width={100} appearance="secondary">
+      <button width={100} maxHeight={33} appearance="secondary">
         Ukraine
       </button>
     </vstack>
