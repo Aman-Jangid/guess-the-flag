@@ -7,6 +7,7 @@ import GameOptions from "./screens/GameOptions.js";
 
 Devvit.configure({
   redditAPI: true,
+  redis: true,
 });
 
 // Add a menu item to the subreddit menu for instantiating the new experience post
@@ -22,12 +23,12 @@ Devvit.addMenuItem({
 
     const subreddit = await reddit.getCurrentSubreddit();
     const post = await reddit.submitPost({
-      title: "My devvit post",
+      title: "Guess The Flag!",
       subredditName: subreddit.name,
       // The preview appears while the post loads
       preview: (
         <vstack height="100%" width="100%" alignment="middle center">
-          <text size="large">Loading ...</text>
+          <image url="gtf.jpg" imageHeight={100} imageWidth={100} />
         </vstack>
       ),
     });
