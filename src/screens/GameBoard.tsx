@@ -11,6 +11,7 @@ const GameBoard = ({ setPage }: PageProps) => (
     alignment="center"
     backgroundColor="#0B1315"
     lightBackgroundColor="#FEFFFE"
+    onPress={() => setPage("a")}
   >
     <spacer size="small" />
     <hstack

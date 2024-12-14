@@ -20,13 +20,13 @@ const Home = ({ setPage }: PageProps) => (
       icon={"activity"}
       onPress={() => setPage("b")}
     >
-      Play !
+      Play
     </button>
     <button
       width={70}
       appearance={"bordered"}
       icon={"top"}
-      onPress={() => setPage("e")}
+      onPress={() => setPage("d")}
     >
       Leaderboard
     </button>

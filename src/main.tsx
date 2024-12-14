@@ -1,8 +1,9 @@
 // Learn more at developers.reddit.com/docs
 import { Devvit, useState } from "@devvit/public-api";
-import GameBoard from "./screens/gameboard.js";
-import Home from "./screens/home.js";
-import Leaderboard from "./screens/leaderboard.js";
+import GameBoard from "./screens/GameBoard.js";
+import Home from "./screens/Home.js";
+import Leaderboard from "./screens/Leaderboard.js";
+import GameOptions from "./screens/GameOptions.js";
 
 Devvit.configure({
   redditAPI: true,
@@ -34,14 +35,17 @@ Devvit.addMenuItem({
   },
 });
 
+type optionType = "timer" | "streak";
+
 // Add a post type definition
 Devvit.addCustomPostType({
   // name: "Experience Post",
   name: "Guess The Flag!",
   height: "regular",
-  description: "A fun game to guess the flags",
+  description: "A fun game to guess the flags of countries.",
   render: (_context) => {
-    const [page, setPage] = useState("a");
+    const [page, setPage] = useState<string>("a");
+    const [option, setOption] = useState<optionType>("timer");
 
     let currentPage;
     switch (page) {
@@ -49,9 +53,12 @@ Devvit.addCustomPostType({
         currentPage = <Home setPage={setPage} />;
         break;
       case "b":
-        currentPage = <GameBoard setPage={setPage} />;
+        currentPage = <GameOptions setPage={setPage} setOption={setOption} />;
         break;
       case "c":
+        currentPage = <GameBoard setPage={setPage} />;
+        break;
+      case "d":
         currentPage = <Leaderboard setPage={setPage} />;
         break;
       default:

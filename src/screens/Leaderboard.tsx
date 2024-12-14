@@ -12,6 +12,7 @@ const Leaderboard = ({ setPage }: PageProps) => (
     gap="small"
     backgroundColor="#0B1315"
     lightBackgroundColor="#FEFFFE"
+    onPress={() => setPage("a")}
   >
     <hstack
       alignment={"center middle"}
