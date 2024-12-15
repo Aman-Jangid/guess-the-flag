@@ -1,12 +1,18 @@
 import { Devvit, svg, useInterval, useState } from "@devvit/public-api";
 
+import countries from "../data/data.json" assert { type: "json" };
+
 type PageProps = {
   setPage: (page: string) => void;
   mode: "timer" | "streak";
 };
 
-// timer
+// Helper to shuffle an array
+function shuffleArray<T>(array: T[]): T[] {
+  return array.sort(() => Math.random() - 0.5);
+}
 
+// timer
 function formatTime(seconds: number) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
@@ -17,12 +23,85 @@ function formatTime(seconds: number) {
 
 const GameBoard = ({ setPage, mode }: PageProps) => {
   const [timeLeft, setTimeLeft] = useState(60); // 1-minute timer (60 seconds)
+  const [options, setOptions] = useState<string[]>([]); // Shuffled options
+  const [answer, setAnswer] = useState<string>(""); // Correct answer
+  const [flagUrl, setFlagUrl] = useState<string>(""); // Flag image URL
+  const [streak, setStreak] = useState<number>(0); // Streak counter
+  const [firstRender, setFirstRender] = useState<boolean>(true); // First render flag
+  const [correct, setCorrect] = useState<number>(0);
+  const [incorrect, setIncorrect] = useState<number>(0);
+  const [gameOver, setGameOver] = useState<boolean>(false);
 
-  const tick = () => {
-    setTimeLeft((prev: number) => (prev > 0 ? prev - 1 : 0));
+  const generateOptions = () => {
+    const countryCodes = Object.keys(countries); // All country codes
+    const randomAnswerIndex = Math.floor(Math.random() * countryCodes.length); // Random index for the answer
+    const answerCode = countryCodes[randomAnswerIndex]; // Unique answer code
+    const answerCountry = countries[answerCode].country; // Answer country name
+
+    // Pick two random options (can repeat initially but must be unique finally)
+    let randomOptions: string[] = [];
+    while (randomOptions.length < 2) {
+      const randomIndex = Math.floor(Math.random() * countryCodes.length);
+      const optionCode = countryCodes[randomIndex];
+      const optionCountry = countries[optionCode].country;
+      if (
+        optionCountry !== answerCountry &&
+        !randomOptions.includes(optionCountry)
+      ) {
+        randomOptions.push(optionCountry);
+      }
+    }
+
+    // Combine and shuffle options
+    const allOptions = shuffleArray([answerCountry, ...randomOptions]);
+
+    // Set state
+    setAnswer(answerCountry); // Save the answer
+    setFlagUrl(countries[answerCode].flag); // Save the flag URL
+    setOptions(allOptions); // Save the shuffled options
   };
 
-  useInterval(tick, 1000).start();
+  // Generate options on first render
+  if (firstRender) {
+    generateOptions();
+    setFirstRender(false);  console.log("Answer:", answer);
+    console.log("flag", flagUrl);
+  }
+
+  // start the timer only if the mode is timer
+  if (mode === "timer") {
+    const tick = () => {
+      if (timeLeft === 0) {
+        setGameOver(true);
+        setFirstRender(true);
+        setPage("d");
+        return;
+      }
+      setTimeLeft((prev: number) => (prev > 0 ? prev - 1 : 0));
+    };
+    useInterval(tick, 1000).start();
+  }
+
+  const handleOptionClick = (option: string) => {
+    if (option === answer) {
+      setCorrect((prev) => prev + 1);
+      setStreak((prev) => prev + 1);
+      generateOptions();
+    } else {
+      if (mode === "streak") {
+        setGameOver(true);
+        setFirstRender(true);
+        setPage("d");
+        return;
+      }
+      if (mode === "timer") {
+        setIncorrect((prev) => prev + 1);
+        generateOptions();
+      }
+    }
+  };
+
+
 
   return (
     <vstack
@@ -31,7 +110,6 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
       alignment="center"
       backgroundColor="#0B1315"
       lightBackgroundColor="#FEFFFE"
-      onPress={() => setPage("a")}
     >
       <spacer size="small" />
       {/* STATS */}
@@ -53,7 +131,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
               alignment="middle center"
             >
               <text size={"large"} weight="bold" color="orange">
-                1
+                {streak}
               </text>
               <text size={"large"}>/256</text>
             </hstack>
@@ -76,7 +154,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
             >
               <image url="streak.png" imageHeight={20} imageWidth={20} />
               <text size={"large"} color="white">
-                0
+                {streak}
               </text>
             </hstack>{" "}
           </>
@@ -95,14 +173,14 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
               <hstack gap={"small"} alignment="middle center">
                 <icon name="checkmark" height={20} color="green" />
                 <text size={"large"} weight="bold" color="yellowgreen">
-                  5
+                  {correct}
                 </text>
               </hstack>
               <vstack height={100} width={1} border="thin" />
               <hstack gap={"small"} alignment="middle center">
                 <icon name="close" height={20} color="red" />
                 <text size={"large"} weight="bold" color="orangered">
-                  2
+                  {incorrect}
                 </text>
               </hstack>
             </hstack>
@@ -134,7 +212,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
       <spacer size="small" />
       {/* FLAG */}
       <vstack height={36} width={90} alignment="middle center">
-        <image url={"flags/ua.png"} imageHeight={150} imageWidth={150} />
+        <image url={flagUrl} imageHeight={150} imageWidth={150} />
       </vstack>
       <spacer size="small" />
       {/* OPTIONS */}
@@ -145,15 +223,17 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
         cornerRadius={"small"}
         gap={"small"}
       >
-        <button width={100} maxHeight={33} appearance="secondary">
-          India
-        </button>
-        <button width={100} maxHeight={33} appearance="secondary">
-          Scotland
-        </button>
-        <button width={100} maxHeight={33} appearance="secondary">
-          Ukraine
-        </button>
+        {options.map((option, index) => (
+          <button
+            width={100}
+            key={index.toString()}
+            maxHeight={33}
+            appearance="secondary"
+            onPress={() => handleOptionClick(option)}
+          >
+            {option}
+          </button>
+        ))}
       </vstack>
     </vstack>
   );

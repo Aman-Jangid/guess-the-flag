@@ -1,5 +1,6 @@
 // Learn more at developers.reddit.com/docs
 import { Devvit, useState } from "@devvit/public-api";
+
 import GameBoard from "./screens/GameBoard.js";
 import Home from "./screens/Home.js";
 import Leaderboard from "./screens/Leaderboard.js";
@@ -8,6 +9,7 @@ import GameOptions from "./screens/GameOptions.js";
 Devvit.configure({
   redditAPI: true,
   redis: true,
+  http: true,
 });
 
 // Add a menu item to the subreddit menu for instantiating the new experience post
