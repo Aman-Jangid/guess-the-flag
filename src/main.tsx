@@ -5,6 +5,7 @@ import GameBoard from "./screens/GameBoard.js";
 import Home from "./screens/Home.js";
 import Leaderboard from "./screens/Leaderboard.js";
 import GameOptions from "./screens/GameOptions.js";
+import GameOver from "./screens/GameOver.js";
 
 Devvit.configure({
   redditAPI: true,
@@ -49,6 +50,7 @@ Devvit.addCustomPostType({
   render: (_context) => {
     const [page, setPage] = useState<string>("a");
     const [mode, setMode] = useState<optionType>("timer");
+    const [score, setScore] = useState<number>(0);
 
     let currentPage;
     switch (page) {
@@ -64,6 +66,8 @@ Devvit.addCustomPostType({
         currentPage = <GameBoard setPage={setPage} mode={mode} />;
         break;
       case "d":
+        currentPage = <GameOver setPage={setPage} score={score} />;
+      case "e":
         currentPage = <Leaderboard setPage={setPage} />;
         break;
       default:

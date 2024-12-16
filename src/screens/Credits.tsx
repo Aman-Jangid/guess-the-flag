@@ -1,7 +1,18 @@
-// credits , attributions
+// a component with a list of attributions
+import { Devvit } from "@devvit/public-api";
 
-// streak icon - <a href="https://www.flaticon.com/free-icons/fire" title="fire icons">Fire icons created by Bahu Icons - Flaticon</a>
-// stopwatch icon - <a href="https://www.flaticon.com/free-icons/timer" title="timer icons">Timer icons created by Freepik - Flaticon</a>
-// timer blue - <a href="https://www.flaticon.com/free-icons/timer" title="timer icons">Timer icons created by Karacis - Flaticon</a>
-// alarm clock blue - <a href="https://www.flaticon.com/free-icons/alarm" title="alarm icons">Alarm icons created by Freepik - Flaticon</a>
-// lightning - <a href="https://www.flaticon.com/free-icons/lightning" title="lightning icons">Lightning icons created by Freepik - Flaticon</a>
+export default function Credits() {
+  return (
+    <vstack>
+      <text>credits , attributions</text>
+      <text>
+        Alarm icons created by Freepik :
+        https://www.flaticon.com/free-icons/alarm
+      </text>
+      <text>
+        Fire icons created by Bahu Icons :
+        https://www.flaticon.com/free-icons/fire
+      </text>
+    </vstack>
+  );
+}
