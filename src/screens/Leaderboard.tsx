@@ -1,4 +1,7 @@
 import { Devvit } from "@devvit/public-api";
+import { LeaderboardHeader } from "../components/LeaderboardHeader.js";
+import { LeaderboardRow } from "../components/LeaderboardRow.js";
+import { LeaderboardFooter } from "../components/LeaderboardFooter.js";
 
 interface PageProps {
   setPage: (page: string) => void;
@@ -28,162 +31,38 @@ const Leaderboard = ({ setPage }: PageProps) => (
     backgroundColor="#0B1315"
     lightBackgroundColor="#FEFFFE"
   >
-    <hstack
-      alignment={"center middle"}
-      cornerRadius={"small"}
-      width={100}
-      height={18}
-      gap={"medium"}
-    >
-      <vstack
-        height={50}
-        width={50}
-        backgroundColor=""
-        alignment="start middle"
-        cornerRadius={"small"}
-      >
-        <text size={"large"} weight={"bold"} color={"white"}>
-          Leaderboard
-        </text>
-      </vstack>
-      <vstack
-        height={50}
-        width={40}
-        backgroundColor=""
-        alignment="end middle"
-        cornerRadius={"small"}
-      >
-        <icon
-          name="close"
-          size="medium"
-          color="white"
-          onPress={() => setPage("a")}
-        />
-      </vstack>
-    </hstack>
+    <LeaderboardHeader setPage={setPage} />
     <vstack
       height={80}
       width={90}
-      backgroundColor=""
-      border={"thick"}
-      cornerRadius={"small"}
-      borderColor={"white"}
+      backgroundColor="#1C1C1E"
+      border="thick"
+      cornerRadius="small"
+      borderColor="white"
+      padding="medium"
+      gap="small"
     >
       <hstack>
-        <vstack
-          height={100}
-          width={20}
-          backgroundColor=""
-          alignment="start middle"
-          cornerRadius={"small"}
-        >
-          <text size={"small"} weight={"bold"} color={"orange"}>
+        <vstack height={100} width={20} alignment="start middle">
+          <text size="small" weight="bold" color="orange">
             Rank
           </text>
         </vstack>
-        <vstack
-          height={100}
-          width={50}
-          backgroundColor=""
-          alignment="start middle"
-          cornerRadius={"small"}
-        >
-          <text size={"small"} weight={"bold"} color={"white"}>
+        <vstack height={100} width={50} alignment="start middle">
+          <text size="small" weight="bold" color="white">
             Name
           </text>
         </vstack>
-        <vstack
-          height={100}
-          width={30}
-          backgroundColor=""
-          alignment="start middle"
-          cornerRadius={"small"}
-        >
-          <text size={"small"} weight={"bold"} color={"green"}>
+        <vstack height={100} width={30} alignment="start middle">
+          <text size="small" weight="bold" color="green">
             Score
           </text>
         </vstack>
       </hstack>
       {dummyData.map((data) => (
-        <hstack key={data.id.toString()}>
-          <vstack
-            height={100}
-            width={20}
-            backgroundColor=""
-            alignment="center middle"
-            cornerRadius={"small"}
-          >
-            <text size={"small"} color={"white"}>
-              {data.rank}
-            </text>
-          </vstack>
-          <vstack
-            height={100}
-            width={50}
-            backgroundColor=""
-            alignment="start middle"
-            cornerRadius={"small"}
-          >
-            <text size={"small"} color={"white"}>
-              {data.name}
-            </text>
-          </vstack>
-          <vstack
-            height={100}
-            width={30}
-            backgroundColor=""
-            alignment="start middle"
-            cornerRadius={"small"}
-          >
-            <text size={"small"} color={"white"}>
-              {data.score}
-            </text>
-          </vstack>
-        </hstack>
+        <LeaderboardRow data={data} />
       ))}
-      <hstack
-        backgroundColor="blue"
-        width={100}
-        height={10}
-        alignment="center middle"
-        cornerRadius={"small"}
-        border="thick"
-        borderColor="white"
-      >
-        <vstack
-          height={100}
-          width={20}
-          backgroundColor=""
-          alignment="center middle"
-          cornerRadius={"small"}
-        >
-          <text size={"small"} color={"white"}>
-            {you.rank}
-          </text>
-        </vstack>
-        <vstack
-          height={100}
-          width={50}
-          backgroundColor=""
-          alignment="start middle"
-          cornerRadius={"small"}
-        >
-          <text size={"small"} color={"white"}>
-            {you.name}
-          </text>
-        </vstack>
-        <vstack
-          height={100}
-          width={30}
-          backgroundColor=""
-          alignment="start middle"
-          cornerRadius={"small"}
-        >
-          <text size={"small"} color={"white"}>
-            {you.score}
-          </text>
-        </vstack>
-      </hstack>
+      <LeaderboardFooter data={you} />
     </vstack>
   </vstack>
 );
