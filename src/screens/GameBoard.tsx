@@ -1,5 +1,17 @@
 import { Devvit, IconName, useInterval, useState } from "@devvit/public-api";
-import countries from "../data/data.json" assert { type: "json" };
+
+import TimerStats from "../components/TimerStats.js";
+import StreakStats from "../components/StreakStats.js";
+import Stat from "../components/Stat.js";
+
+import countriesData from "../data/data.json" assert { type: "json" };
+
+const countries = countriesData as Record<string, CountryType>;
+
+type CountryType = {
+  country: string;
+  flag: string;
+};
 
 type PageProps = {
   setPage: (page: string) => void;
@@ -12,13 +24,6 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // Format time in MM:SS format
-function formatTime(seconds: number) {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(
-    remainingSeconds
-  ).padStart(2, "0")}`;
-}
 
 const GameBoard = ({ setPage, mode }: PageProps) => {
   const [timeLeft, setTimeLeft] = useState(60); // 1-minute timer
@@ -35,12 +40,14 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
     const countryCodes = Object.keys(countries);
     const randomAnswerIndex = Math.floor(Math.random() * countryCodes.length);
     const answerCode = countryCodes[randomAnswerIndex];
-    const answerCountry = countries[answerCode].country;
+    const answerCountry = countries[answerCode]
+      .country as CountryType["country"];
 
     const randomOptions: string[] = [];
     while (randomOptions.length < 2) {
       const randomIndex = Math.floor(Math.random() * countryCodes.length);
-      const optionCountry = countries[countryCodes[randomIndex]].country;
+      const optionCountry = countries[countryCodes[randomIndex]]
+        .country as CountryType["country"];
       if (
         optionCountry !== answerCountry &&
         !randomOptions.includes(optionCountry)
@@ -51,7 +58,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
 
     const allOptions = shuffleArray([answerCountry, ...randomOptions]);
     setAnswer(answerCountry);
-    setFlagUrl(countries[answerCode].flag);
+    setFlagUrl(countries[answerCode].flag as CountryType["flag"]);
     setOptions(allOptions);
   };
 
@@ -92,6 +99,8 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   useState(() => {
     generateOptions();
   }, []);
+
+  console.log("Flag URL: ", flagUrl);
 
   return (
     <vstack
@@ -149,83 +158,5 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
     </vstack>
   );
 };
-
-// Timer Stats Component
-const TimerStats = ({
-  correct,
-  incorrect,
-  timeLeft,
-}: {
-  correct: number;
-  incorrect: number;
-  timeLeft: number;
-}) => (
-  <>
-    <hstack
-      height={100}
-      width={50}
-      backgroundColor=""
-      border="thick"
-      cornerRadius="small"
-      alignment="middle center"
-      gap="small"
-    >
-      <Stat icon="checkmark" value={correct} color="yellowgreen" />
-      <vstack height={100} width={1} border="thin" />
-      <Stat icon="close" value={incorrect} color="orangered" />
-    </hstack>
-    <vstack height={100} grow />
-    <hstack height={100} width={40} alignment="middle center" gap="small">
-      <image url="timer.png" imageHeight={20} imageWidth={20} />
-      <text size="large" color="white" weight="bold">
-        {formatTime(timeLeft)}
-      </text>
-    </hstack>
-  </>
-);
-
-// Streak Stats Component
-const StreakStats = ({ streak }: { streak: number }) => (
-  <>
-    <hstack
-      height={100}
-      width={40}
-      backgroundColor=""
-      border="thick"
-      cornerRadius="small"
-      alignment="middle center"
-    >
-      <text size="large" weight="bold" color="orange">
-        {streak}
-      </text>
-      <text size="large">/256</text>
-    </hstack>
-    <vstack height={100} grow />
-    <hstack height={100} width={40} alignment="middle center" gap="small">
-      <image url="streak.png" imageHeight={20} imageWidth={20} />
-      <text size="large" color="white">
-        {streak}
-      </text>
-    </hstack>
-  </>
-);
-
-// Stat Component
-const Stat = ({
-  icon,
-  value,
-  color,
-}: {
-  icon: string;
-  value: number;
-  color: string;
-}) => (
-  <hstack gap="small" alignment="middle center">
-    <icon name={icon as IconName} height={20} color={color} />
-    <text size="large" weight="bold" color={color}>
-      {value}
-    </text>
-  </hstack>
-);
 
 export default GameBoard;
