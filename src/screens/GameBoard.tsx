@@ -96,9 +96,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   };
 
   // Initialize options on first render
-  useState(() => {
-    generateOptions();
-  }, []);
+  if (options.length === 0) generateOptions();
 
   console.log("Flag URL: ", flagUrl);
 
