@@ -35,6 +35,11 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   const [correct, setCorrect] = useState<number>(0); // Correct counter
   const [incorrect, setIncorrect] = useState<number>(0); // Incorrect counter
   const [gameOver, setGameOver] = useState<boolean>(false);
+  const [pressed, setPressed] = useState<boolean>(false);
+
+  // for testing
+  const [green, setGreen] = useState<boolean>(false);
+  const [red, setRed] = useState<boolean>(false);
 
   // Generate options for the current question
   const generateOptions = () => {
@@ -77,10 +82,14 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   // Handle option click
   const handleOptionClick = (option: string) => {
     if (option === answer) {
+      setGreen(true);
+
       setCorrect((prev) => prev + 1);
       setStreak((prev) => prev + 1);
       generateOptions();
     } else {
+      setRed(true);
+
       if (mode === "streak") {
         endGame();
       } else if (mode === "timer") {
@@ -147,7 +156,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
             key={index.toString()}
             width={100}
             maxHeight={33}
-            appearance="secondary"
+            appearance={green ? "success" : red ? "destructive" : "secondary"}
             onPress={() => handleOptionClick(option)}
           >
             {option}
