@@ -6,6 +6,7 @@ import Home from "./screens/Home.js";
 import Leaderboard from "./screens/Leaderboard.js";
 import GameOptions from "./screens/GameOptions.js";
 import GameOver from "./screens/GameOver.js";
+import Credits from "./screens/Credits.js";
 
 Devvit.configure({
   redditAPI: true,
@@ -63,13 +64,18 @@ Devvit.addCustomPostType({
         );
         break;
       case "c":
-        currentPage = <GameBoard setPage={setPage} mode={mode} />;
+        currentPage = (
+          <GameBoard setPage={setPage} mode={mode} setScore={setScore} />
+        );
         break;
       case "d":
         currentPage = <GameOver setPage={setPage} score={score} />;
+        break;
       case "e":
         currentPage = <Leaderboard setPage={setPage} />;
         break;
+      case "f":
+        currentPage = <Credits setPage={setPage} />;
       default:
         currentPage = <Home setPage={setPage} />;
     }

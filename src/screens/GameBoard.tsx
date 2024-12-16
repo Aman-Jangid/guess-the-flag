@@ -16,6 +16,7 @@ type CountryType = {
 type PageProps = {
   setPage: (page: string) => void;
   mode: "timer" | "streak";
+  setScore?: (score: number) => void;
 };
 
 // Helper to shuffle an array

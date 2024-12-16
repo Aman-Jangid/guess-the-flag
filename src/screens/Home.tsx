@@ -26,7 +26,7 @@ const Home = ({ setPage }: PageProps) => (
       width={70}
       appearance={"bordered"}
       icon={"top"}
-      onPress={() => setPage("d")}
+      onPress={() => setPage("e")}
     >
       Leaderboard
     </button>

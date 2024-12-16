@@ -1,9 +1,21 @@
 // a component with a list of attributions
 import { Devvit } from "@devvit/public-api";
 
-export default function Credits() {
+interface PageProps {
+  setPage: (page: string) => void;
+}
+
+export default function Credits({ setPage }: PageProps) {
   return (
     <vstack>
+      <button
+        appearance="bordered"
+        onPress={() => {
+          setPage("a");
+        }}
+      >
+        Go back
+      </button>
       <text>credits , attributions</text>
       <text>
         Alarm icons created by Freepik :
