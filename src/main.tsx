@@ -46,10 +46,10 @@ type optionType = "timer" | "streak";
 Devvit.addCustomPostType({
   // name: "Experience Post",
   name: "Guess The Flag!",
-  height: "regular",
+  height: "tall",
   description: "A fun game to guess the flags of countries.",
   render: (_context) => {
-    const [page, setPage] = useState<string>("a");
+    const [page, setPage] = useState<string>("d");
     const [mode, setMode] = useState<optionType>("timer");
     const [score, setScore] = useState<number>(0);
 
@@ -82,7 +82,7 @@ Devvit.addCustomPostType({
 
     return (
       <vstack height="100%" gap="medium" alignment="center middle">
-        <vstack width={"260px"} height={100}>
+        <vstack width={"300px"} height={100}>
           {currentPage}
         </vstack>
       </vstack>
