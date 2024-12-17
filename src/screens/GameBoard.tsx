@@ -2,7 +2,6 @@ import { Devvit, IconName, useInterval, useState } from "@devvit/public-api";
 
 import TimerStats from "../components/TimerStats.js";
 import StreakStats from "../components/StreakStats.js";
-import Stat from "../components/Stat.js";
 
 import countriesData from "../data/data.json" assert { type: "json" };
 
