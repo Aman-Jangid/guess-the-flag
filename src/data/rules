@@ -19,6 +19,9 @@ count max_streak too for results;
 
 if all answers (254) are correct and there is time left : score += time_left_in_seconds * 5;
 
+score = (correctAnswers * basePoints) + (remainingTime * timeMultiplier) - (wrongAnswers * penaltyPoints)
+
+
 ////*********************************************** in streak mode //***********************************************
 
 let score = 0;
@@ -27,3 +30,6 @@ answer == wrong ? game over;
 
 let streak be the multiplier = streak/10;
 so score = score + 10 * multiplier;
+keep a timer -> starts at 0 for every question -> if time < 2s -> score += 20, if time < 4s -> score += 10, if time < 6s -> score += 5; 
+
+score = streakLength * basePoints * multiplier

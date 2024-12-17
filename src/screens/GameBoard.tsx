@@ -3,12 +3,14 @@ import { Devvit, IconName, useInterval, useState } from "@devvit/public-api";
 import TimerStats from "../components/TimerStats.js";
 import StreakStats from "../components/StreakStats.js";
 
-import countriesData from "../data/data.json" assert { type: "json" };
+import countriesData from "../data/countries.json" assert { type: "json" };
+import { UniqueCombinationGenerator } from "../helpers/genUniqueCombination.js";
 
-const countries = countriesData as Record<string, CountryType>;
+const countries = countriesData as unknown as Record<string, CountryType>;
 
 type CountryType = {
-  country: string;
+  countryName: string;
+  countryCode: string;
   flag: string;
 };
 
@@ -36,35 +38,26 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [pressed, setPressed] = useState<boolean>(false);
 
-  // for testing
-  const [green, setGreen] = useState<boolean>(false);
-  const [red, setRed] = useState<boolean>(false);
+  const arr = Array.from({ length: 254 }, (_, i) => i);
+  const combinationGenerator = new UniqueCombinationGenerator(arr);
 
   // Generate options for the current question
   const generateOptions = () => {
-    const countryCodes = Object.keys(countries);
-    const randomAnswerIndex = Math.floor(Math.random() * countryCodes.length);
-    const answerCode = countryCodes[randomAnswerIndex];
-    const answerCountry = countries[answerCode]
-      .country as CountryType["country"];
-
-    const randomOptions: string[] = [];
-    while (randomOptions.length < 2) {
-      const randomIndex = Math.floor(Math.random() * countryCodes.length);
-      const optionCountry = countries[countryCodes[randomIndex]]
-        .country as CountryType["country"];
-      if (
-        optionCountry !== answerCountry &&
-        !randomOptions.includes(optionCountry)
-      ) {
-        randomOptions.push(optionCountry);
-      }
+    const combination = combinationGenerator.getUniqueCombination();
+    if (!combination) {
+      endGame();
+      return;
     }
 
-    const allOptions = shuffleArray([answerCountry, ...randomOptions]);
+    const [ansIndex, op1Index, op2Index] = combination;
+
+    const answerCountry = countries[ansIndex].countryName;
+    const op1Country = countries[op1Index].countryName;
+    const op2Country = countries[op2Index].countryName;
+
     setAnswer(answerCountry);
-    setFlagUrl(countries[answerCode].flag as CountryType["flag"]);
-    setOptions(allOptions);
+    setFlagUrl(countries[ansIndex].flag as CountryType["flag"]);
+    setOptions(shuffleArray([answerCountry, op1Country, op2Country]));
   };
 
   // Handle timer logic for Timer Mode
@@ -81,14 +74,10 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   // Handle option click
   const handleOptionClick = (option: string) => {
     if (option === answer) {
-      setGreen(true);
-
       setCorrect((prev) => prev + 1);
       setStreak((prev) => prev + 1);
       generateOptions();
     } else {
-      setRed(true);
-
       if (mode === "streak") {
         endGame();
       } else if (mode === "timer") {
@@ -139,7 +128,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
       <spacer size="small" />
       {/* Flag Section */}
       <vstack height={36} width={90} alignment="middle center">
-        <image url={flagUrl} imageHeight={150} imageWidth={150} />
+        <image url={flagUrl} imageHeight={250} imageWidth={250} />
       </vstack>
       <spacer size="small" />
       {/* Options Section */}
@@ -155,7 +144,7 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
             key={index.toString()}
             width={100}
             maxHeight={33}
-            appearance={green ? "success" : red ? "destructive" : "secondary"}
+            appearance={"secondary"}
             onPress={() => handleOptionClick(option)}
           >
             {option}

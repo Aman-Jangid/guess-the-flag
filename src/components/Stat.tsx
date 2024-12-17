@@ -10,7 +10,7 @@ const Stat = ({
   color: string;
 }) => (
   <hstack gap="small" alignment="middle center">
-    <icon name={icon as IconName} height={20} color={color} />
+    <icon name={icon as IconName} height={14} color={color} />
     <text size="large" weight="bold" color={color}>
       {value}
     </text>

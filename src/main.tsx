@@ -1,4 +1,3 @@
-// Learn more at developers.reddit.com/docs
 import { Devvit, useState } from "@devvit/public-api";
 
 import GameBoard from "./screens/GameBoard.js";
@@ -49,7 +48,7 @@ Devvit.addCustomPostType({
   height: "tall",
   description: "A fun game to guess the flags of countries.",
   render: (_context) => {
-    const [page, setPage] = useState<string>("d");
+    const [page, setPage] = useState<string>("c");
     const [mode, setMode] = useState<optionType>("timer");
     const [score, setScore] = useState<number>(0);
 

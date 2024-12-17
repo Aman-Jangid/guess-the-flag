@@ -13,7 +13,7 @@ const TimerStats = ({
 }) => (
   <>
     <hstack
-      height={100}
+      height={80}
       width={50}
       backgroundColor=""
       border="thick"
