@@ -35,26 +35,38 @@ const Leaderboard = ({ setPage }: PageProps) => (
     <vstack
       height={80}
       width={90}
-      backgroundColor="#1C1C1E"
-      border="thick"
       cornerRadius="small"
-      borderColor="white"
       padding="medium"
       gap="small"
     >
       <hstack>
         <vstack height={100} width={20} alignment="start middle">
-          <text size="small" weight="bold" color="orange">
+          <text
+            alignment="center middle"
+            size="medium"
+            weight="bold"
+            color="orange"
+          >
             Rank
           </text>
         </vstack>
         <vstack height={100} width={50} alignment="start middle">
-          <text size="small" weight="bold" color="white">
+          <text
+            alignment="center middle"
+            size="medium"
+            weight="bold"
+            color="white"
+          >
             Name
           </text>
         </vstack>
         <vstack height={100} width={30} alignment="start middle">
-          <text size="small" weight="bold" color="green">
+          <text
+            alignment="center middle"
+            size="medium"
+            weight="bold"
+            color="white"
+          >
             Score
           </text>
         </vstack>

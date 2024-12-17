@@ -16,8 +16,6 @@ const TimerStats = ({
       height={80}
       width={50}
       backgroundColor=""
-      border="thick"
-      cornerRadius="small"
       alignment="middle center"
       gap="small"
     >
@@ -28,7 +26,7 @@ const TimerStats = ({
     <vstack height={100} grow />
     <hstack height={100} width={40} alignment="middle center" gap="small">
       <image url="timer.png" imageHeight={20} imageWidth={20} />
-      <text size="large" color="white" weight="bold">
+      <text size="large" lightColor="#0A1315" darkColor="#E5EBEE" weight="bold">
         {formatTime(timeLeft)}
       </text>
     </hstack>

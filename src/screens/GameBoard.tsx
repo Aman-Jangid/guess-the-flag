@@ -159,7 +159,15 @@ const GameBoard = ({
       </hstack>
       <spacer size="small" />
       {/* Flag Section */}
-      <vstack height={36} width={90} alignment="middle center">
+      <vstack
+        height={36}
+        width={90}
+        alignment="middle center"
+        border="thin"
+        darkBorderColor="white"
+        lightBorderColor="#0A1315"
+        cornerRadius="small"
+      >
         <image url={flagUrl} imageHeight={250} imageWidth={250} />
       </vstack>
       <spacer size="small" />

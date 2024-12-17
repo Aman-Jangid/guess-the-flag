@@ -31,7 +31,7 @@ Devvit.addMenuItem({
       // The preview appears while the post loads
       preview: (
         <vstack height="100%" width="100%" alignment="middle center">
-          <image url="gtf.jpg" imageHeight={100} imageWidth={100} />
+          <image url="load.jpg" imageHeight={120} imageWidth={120} />
         </vstack>
       ),
     });
@@ -48,7 +48,7 @@ Devvit.addCustomPostType({
   height: "tall",
   description: "A fun game to guess the flags of countries.",
   render: (_context) => {
-    const [page, setPage] = useState<string>("a");
+    const [page, setPage] = useState<string>("d");
     const [mode, setMode] = useState<optionType>("streak");
     const [score, setScore] = useState<number>(0);
     const [streak, setStreak] = useState<number>(0);

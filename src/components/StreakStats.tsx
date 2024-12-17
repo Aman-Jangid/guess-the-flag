@@ -24,7 +24,12 @@ const StreakStats = ({ streak, lives }: { streak: number; lives: number }) => {
       <vstack height={100} grow />
       <hstack height={100} width={40} alignment="middle center" gap="small">
         <image url="streak.png" imageHeight={20} imageWidth={20} />
-        <text size="large" color="white">
+        <text
+          size="large"
+          lightColor="#0A1315"
+          darkColor="#E5EBEE"
+          weight="bold"
+        >
           {streak}
         </text>
       </hstack>

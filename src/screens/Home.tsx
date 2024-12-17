@@ -13,9 +13,9 @@ const Home = ({ setPage }: PageProps) => (
     backgroundColor="#0B1315"
     lightBackgroundColor="#FEFFFE"
   >
-    <image url={"icon.png"} imageHeight={180} imageWidth={180} />
+    <image url={"icon.png"} imageHeight={240} imageWidth={240} />
     <button
-      width={70}
+      width={90}
       appearance={"primary"}
       icon={"activity"}
       onPress={() => setPage("b")}
@@ -23,7 +23,7 @@ const Home = ({ setPage }: PageProps) => (
       Play
     </button>
     <button
-      width={70}
+      width={90}
       appearance={"bordered"}
       icon={"top"}
       onPress={() => setPage("e")}

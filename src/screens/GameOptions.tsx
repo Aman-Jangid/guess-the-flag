@@ -14,7 +14,7 @@ const GameOptions = ({ startGame, mode, setMode, setPage }: PageProps) => {
   return (
     <vstack width="100%" height="100%" alignment="middle center" gap="medium">
       <text size="large" weight="bold">
-        Choose game mode
+        Select game mode
       </text>
       <GameModeSelector mode={mode} setMode={setMode} />
       <spacer height={2} />
