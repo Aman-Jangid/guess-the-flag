@@ -51,6 +51,10 @@ Devvit.addCustomPostType({
     const [page, setPage] = useState<string>("a");
     const [mode, setMode] = useState<optionType>("streak");
     const [score, setScore] = useState<number>(0);
+    const [streak, setStreak] = useState<number>(0);
+    const [correct, setCorrect] = useState<number>(0);
+    const [incorrect, setIncorrect] = useState<number>(0);
+    const [lives, setLives] = useState<number>(3);
 
     let currentPage;
     switch (page) {
@@ -69,11 +73,29 @@ Devvit.addCustomPostType({
             mode={mode}
             setScore={setScore}
             score={score}
+            streak={streak}
+            setStreak={setStreak}
+            correct={correct}
+            setCorrect={setCorrect}
+            incorrect={incorrect}
+            setIncorrect={setIncorrect}
+            lives={lives}
+            setLives={setLives}
           />
         );
         break;
       case "d":
-        currentPage = <GameOver setPage={setPage} score={score} />;
+        currentPage = (
+          <GameOver
+            setPage={setPage}
+            score={score}
+            correct={correct}
+            incorrect={incorrect}
+            lives={lives}
+            mode={mode}
+            streak={streak}
+          />
+        );
         break;
       case "e":
         currentPage = <Leaderboard setPage={setPage} />;

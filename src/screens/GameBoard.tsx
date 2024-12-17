@@ -13,21 +13,40 @@ type PageProps = {
   mode: "timer" | "streak";
   setScore: (score: number | ((prev: number) => number)) => void;
   score: number;
+  streak: number;
+  correct: number;
+  incorrect: number;
+  lives: number;
+  setCorrect: (correct: number | ((prev: number) => number)) => void;
+  setIncorrect: (incorrect: number | ((prev: number) => number)) => void;
+  setStreak: (streak: number | ((prev: number) => number)) => void;
+  setLives: (lives: number | ((prev: number) => number)) => void;
 };
 
 const maxStreak = 254;
 
-const GameBoard = ({ setPage, mode, setScore, score }: PageProps) => {
+const GameBoard = ({
+  setPage,
+  mode,
+  setScore,
+  score,
+  correct,
+  incorrect,
+  lives,
+  setCorrect,
+  setIncorrect,
+  setLives,
+  setStreak,
+  streak,
+}: PageProps) => {
   const [timeLeft, setTimeLeft] = useState(60); // 1-minute timer
+  const [timer, setTimer] = useState<number>(0);
   const [options, setOptions] = useState<string[]>([]); // Shuffled options
   const [answer, setAnswer] = useState<string>(""); // Correct answer
   const [flagUrl, setFlagUrl] = useState<string>(""); // Flag image URL
-  const [streak, setStreak] = useState<number>(0); // Streak counter
-  const [correct, setCorrect] = useState<number>(0); // Correct counter
-  const [incorrect, setIncorrect] = useState<number>(0); // Incorrect counter
+
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [multiplier, setMultiplier] = useState<number>(1);
-  const [lives, setLives] = useState<number>(3);
 
   const arr = Array.from({ length: 254 }, (_, i) => i);
   const combinationGenerator = new UniqueCombinationGenerator(arr);
@@ -50,6 +69,7 @@ const GameBoard = ({ setPage, mode, setScore, score }: PageProps) => {
   if (mode === "timer") {
     useInterval(() => {
       if (timeLeft > 0) {
+        setTimer((prev) => prev + 1);
         setTimeLeft((prev) => prev - 1);
       } else {
         endGame();
@@ -59,8 +79,6 @@ const GameBoard = ({ setPage, mode, setScore, score }: PageProps) => {
 
   // Handle option click
   const handleOptionClick = (option: string) => {
-    console.log(score);
-
     if (option === answer) {
       // score counting in timer mode
       if (mode === "timer") {
@@ -73,8 +91,18 @@ const GameBoard = ({ setPage, mode, setScore, score }: PageProps) => {
       // score counting in streak mode
       else {
         if (streak >= 2) {
-          setMultiplier(1 + streak * 0.05);
-          setScore((prev: number) => prev + 10 * multiplier);
+          if (timer < 2) {
+            setScore((prev: number) => prev + 10 * 2);
+          }
+          if (timer >= 2) {
+            setScore((prev: number) => prev + 10 * 1.5);
+          }
+          if (timer >= 5) {
+            setScore((prev: number) => prev + 10 * 1.25);
+          } else {
+            setMultiplier((prev) => prev + 1);
+            setScore((prev: number) => prev + 10 * multiplier);
+          }
         }
         setScore((prev: number) => prev + 10);
       }
@@ -96,6 +124,7 @@ const GameBoard = ({ setPage, mode, setScore, score }: PageProps) => {
         initializeOptions();
       }
     }
+    setTimer(0);
   };
 
   // Initialize options on first render
@@ -119,7 +148,7 @@ const GameBoard = ({ setPage, mode, setScore, score }: PageProps) => {
         gap="small"
       >
         {mode === "streak" ? (
-          <StreakStats streak={streak} />
+          <StreakStats streak={streak} lives={lives} />
         ) : (
           <TimerStats
             correct={correct}
