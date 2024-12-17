@@ -10,15 +10,15 @@ const StreakStats = ({ streak, lives }: { streak: number; lives: number }) => {
         height={100}
         width={40}
         backgroundColor=""
-        border="thick"
         cornerRadius="small"
+        gap="small"
         alignment="middle center"
       >
         {hearts.map((_, i) => (
-          <icon key={i.toString()} name={"heart"} color="red" />
+          <icon key={i.toString()} name={"heart-fill"} color="red" />
         ))}
         {emptyHearts.map((_, i) => (
-          <icon key={i.toString()} name={"heart"} color="gray" />
+          <icon key={i.toString()} name={"heart"} color="red" />
         ))}
       </hstack>
       <vstack height={100} grow />

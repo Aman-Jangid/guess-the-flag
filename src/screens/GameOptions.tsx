@@ -4,12 +4,13 @@ import { NavigationButtons } from "../components/NavigationButtons.js";
 export type optionType = "timer" | "streak";
 
 export interface PageProps {
-  setPage: (page: string) => void;
   mode: optionType;
-  setMode: (option: optionType) => void;
+  startGame: () => void;
+  setMode: (mode: optionType) => void;
+  setPage: (page: string) => void;
 }
 
-const GameOptions = ({ setPage, setMode, mode }: PageProps) => {
+const GameOptions = ({ startGame, mode, setMode, setPage }: PageProps) => {
   return (
     <vstack width="100%" height="100%" alignment="middle center" gap="medium">
       <text size="large" weight="bold">
@@ -17,10 +18,9 @@ const GameOptions = ({ setPage, setMode, mode }: PageProps) => {
       </text>
       <GameModeSelector mode={mode} setMode={setMode} />
       <spacer height={2} />
-      <NavigationButtons setPage={setPage} />
+      <NavigationButtons startGame={startGame} setPage={setPage} />
     </vstack>
   );
 };
 
 export default GameOptions;
-

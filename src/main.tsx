@@ -56,6 +56,16 @@ Devvit.addCustomPostType({
     const [incorrect, setIncorrect] = useState<number>(0);
     const [lives, setLives] = useState<number>(3);
 
+    const startGame = () => {
+      setMode(mode);
+      setScore(0);
+      setStreak(0);
+      setCorrect(0);
+      setIncorrect(0);
+      setLives(3);
+      setPage("c");
+    };
+
     let currentPage;
     switch (page) {
       case "a":
@@ -63,7 +73,12 @@ Devvit.addCustomPostType({
         break;
       case "b":
         currentPage = (
-          <GameOptions setPage={setPage} setMode={setMode} mode={mode} />
+          <GameOptions
+            startGame={startGame}
+            mode={mode}
+            setMode={setMode}
+            setPage={setPage}
+          />
         );
         break;
       case "c":

@@ -112,11 +112,11 @@ const GameBoard = ({
       initializeOptions();
     } else {
       if (mode === "streak") {
-        setStreak(0);
-        setLives((prev) => prev - 1);
-        if (lives === 0) {
+        if (lives <= 0) {
           endGame();
         }
+        setStreak(0);
+        setLives((prev) => prev - 1);
       } else if (mode === "timer") {
         setScore((prev: number) => prev - 5);
         setTimeLeft((prev) => prev - 3);
