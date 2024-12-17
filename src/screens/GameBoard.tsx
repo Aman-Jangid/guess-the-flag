@@ -1,31 +1,18 @@
-import { Devvit, IconName, useInterval, useState } from "@devvit/public-api";
-
+import { Devvit, useInterval, useState } from "@devvit/public-api";
 import TimerStats from "../components/TimerStats.js";
 import StreakStats from "../components/StreakStats.js";
-
 import countriesData from "../data/countries.json" assert { type: "json" };
 import { UniqueCombinationGenerator } from "../helpers/genUniqueCombination.js";
+import { generateOptions } from "../helpers/generateOptions.js";
+import { CountryType } from "../types/CountryType.js";
 
 const countries = countriesData as unknown as Record<string, CountryType>;
-
-type CountryType = {
-  countryName: string;
-  countryCode: string;
-  flag: string;
-};
 
 type PageProps = {
   setPage: (page: string) => void;
   mode: "timer" | "streak";
   setScore?: (score: number) => void;
 };
-
-// Helper to shuffle an array
-function shuffleArray<T>(array: T[]): T[] {
-  return array.sort(() => Math.random() - 0.5);
-}
-
-// Format time in MM:SS format
 
 const GameBoard = ({ setPage, mode }: PageProps) => {
   const [timeLeft, setTimeLeft] = useState(60); // 1-minute timer
@@ -36,28 +23,22 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   const [correct, setCorrect] = useState<number>(0); // Correct counter
   const [incorrect, setIncorrect] = useState<number>(0); // Incorrect counter
   const [gameOver, setGameOver] = useState<boolean>(false);
-  const [pressed, setPressed] = useState<boolean>(false);
 
   const arr = Array.from({ length: 254 }, (_, i) => i);
   const combinationGenerator = new UniqueCombinationGenerator(arr);
 
-  // Generate options for the current question
-  const generateOptions = () => {
-    const combination = combinationGenerator.getUniqueCombination();
-    if (!combination) {
-      endGame();
-      return;
+  const endGame = () => {
+    setGameOver(true);
+    setPage("d");
+  };
+
+  const initializeOptions = () => {
+    const result = generateOptions(countries, combinationGenerator, endGame);
+    if (result) {
+      setAnswer(result.answerCountry);
+      setFlagUrl(result.flagUrl);
+      setOptions(result.options);
     }
-
-    const [ansIndex, op1Index, op2Index] = combination;
-
-    const answerCountry = countries[ansIndex].countryName;
-    const op1Country = countries[op1Index].countryName;
-    const op2Country = countries[op2Index].countryName;
-
-    setAnswer(answerCountry);
-    setFlagUrl(countries[ansIndex].flag as CountryType["flag"]);
-    setOptions(shuffleArray([answerCountry, op1Country, op2Country]));
   };
 
   // Handle timer logic for Timer Mode
@@ -76,27 +57,19 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
     if (option === answer) {
       setCorrect((prev) => prev + 1);
       setStreak((prev) => prev + 1);
-      generateOptions();
+      initializeOptions();
     } else {
       if (mode === "streak") {
         endGame();
       } else if (mode === "timer") {
         setIncorrect((prev) => prev + 1);
-        generateOptions();
+        initializeOptions();
       }
     }
   };
 
-  // End the game
-  const endGame = () => {
-    setGameOver(true);
-    setPage("d");
-  };
-
   // Initialize options on first render
-  if (options.length === 0) generateOptions();
-
-  console.log("Flag URL: ", flagUrl);
+  if (options.length === 0) initializeOptions();
 
   return (
     <vstack
