@@ -1,0 +1,29 @@
+// rules
+
+
+// score calculations
+
+////*********************************************** in timer mode //***********************************************
+
+let score = 0;
+answer == correct ? score += 10; time +=2;
+answer == wrong ? score += 0; time -=2;
+
+correct answers in a row (count streak >= 2)? add a multiplier;
+let multiplier = 0.2;
+score = score + 10 * multiplier;
+increase multiplier by 0.05 on each correct answer;
+on streak break : streak = 0, multiplier = 0.2;
+
+count max_streak too for results;
+
+if all answers (254) are correct and there is time left : score += time_left_in_seconds * 5;
+
+////*********************************************** in streak mode //***********************************************
+
+let score = 0;
+answer == correct ? score += 10;
+answer == wrong ? game over;
+
+let streak be the multiplier = streak/10;
+so score = score + 10 * multiplier;
