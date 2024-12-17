@@ -64,7 +64,12 @@ Devvit.addCustomPostType({
         break;
       case "c":
         currentPage = (
-          <GameBoard setPage={setPage} mode={mode} setScore={setScore} />
+          <GameBoard
+            setPage={setPage}
+            mode={mode}
+            setScore={setScore}
+            score={score}
+          />
         );
         break;
       case "d":

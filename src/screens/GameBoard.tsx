@@ -11,10 +11,13 @@ const countries = countriesData as unknown as Record<string, CountryType>;
 type PageProps = {
   setPage: (page: string) => void;
   mode: "timer" | "streak";
-  setScore?: (score: number) => void;
+  setScore: (score: number | ((prev: number) => number)) => void;
+  score: number;
 };
 
-const GameBoard = ({ setPage, mode }: PageProps) => {
+const maxStreak = 254;
+
+const GameBoard = ({ setPage, mode, setScore, score }: PageProps) => {
   const [timeLeft, setTimeLeft] = useState(60); // 1-minute timer
   const [options, setOptions] = useState<string[]>([]); // Shuffled options
   const [answer, setAnswer] = useState<string>(""); // Correct answer
@@ -23,6 +26,8 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
   const [correct, setCorrect] = useState<number>(0); // Correct counter
   const [incorrect, setIncorrect] = useState<number>(0); // Incorrect counter
   const [gameOver, setGameOver] = useState<boolean>(false);
+  const [multiplier, setMultiplier] = useState<number>(1);
+  const [lives, setLives] = useState<number>(3);
 
   const arr = Array.from({ length: 254 }, (_, i) => i);
   const combinationGenerator = new UniqueCombinationGenerator(arr);
@@ -54,14 +59,39 @@ const GameBoard = ({ setPage, mode }: PageProps) => {
 
   // Handle option click
   const handleOptionClick = (option: string) => {
+    console.log(score);
+
     if (option === answer) {
+      // score counting in timer mode
+      if (mode === "timer") {
+        if (streak === maxStreak) {
+          setScore((prev: number) => prev + timeLeft * 2);
+        }
+        setScore((prev: number) => prev + 10);
+        setTimeLeft((prev) => prev + 3);
+      }
+      // score counting in streak mode
+      else {
+        if (streak >= 2) {
+          setMultiplier(1 + streak * 0.05);
+          setScore((prev: number) => prev + 10 * multiplier);
+        }
+        setScore((prev: number) => prev + 10);
+      }
+
       setCorrect((prev) => prev + 1);
       setStreak((prev) => prev + 1);
       initializeOptions();
     } else {
       if (mode === "streak") {
-        endGame();
+        setStreak(0);
+        setLives((prev) => prev - 1);
+        if (lives === 0) {
+          endGame();
+        }
       } else if (mode === "timer") {
+        setScore((prev: number) => prev - 5);
+        setTimeLeft((prev) => prev - 3);
         setIncorrect((prev) => prev + 1);
         initializeOptions();
       }
