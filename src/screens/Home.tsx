@@ -14,6 +14,7 @@ const Home = ({ setPage }: PageProps) => (
     lightBackgroundColor="#FEFFFE"
   >
     <image url={"icon.png"} imageHeight={240} imageWidth={240} />
+    <spacer size="medium" />
     <button
       width={90}
       appearance={"primary"}

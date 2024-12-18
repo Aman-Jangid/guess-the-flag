@@ -31,7 +31,7 @@ Devvit.addMenuItem({
       // The preview appears while the post loads
       preview: (
         <vstack height="100%" width="100%" alignment="middle center">
-          <image url="load.jpg" imageHeight={120} imageWidth={120} />
+          <image url="icon.png" imageHeight={300} imageWidth={300} />
         </vstack>
       ),
     });
@@ -55,6 +55,40 @@ Devvit.addCustomPostType({
     const [correct, setCorrect] = useState<number>(0);
     const [incorrect, setIncorrect] = useState<number>(0);
     const [lives, setLives] = useState<number>(3);
+    const [leaderboard, setLeaderboard] = useState<any[]>([]);
+    const [myScore, setMyScore] = useState<any>(0);
+
+    const storeUserScore = async (score: number) => {
+      const { reddit } = _context;
+      const user = await reddit.getCurrentUser();
+      if (user) {
+        const { redis } = _context;
+        await redis.zAdd("leaderboard", {
+          member: user.username,
+          score: score,
+        });
+      }
+    };
+
+    const fetchLeaderboard = async () => {
+      const { redis } = _context;
+      const leaderboard = await redis.zRange("leaderboard", 0, 9, {
+        by: "score",
+      });
+      setLeaderboard(leaderboard);
+      await fetchUserScore();
+    };
+
+    const fetchUserScore = async () => {
+      const { reddit } = _context;
+      const user = await reddit.getCurrentUser();
+      if (user) {
+        const { redis } = _context;
+        const score = await redis.zScore("leaderboard", user.username);
+        setMyScore(score);
+        console.log(score);
+      }
+    };
 
     const startGame = () => {
       setMode(mode);
@@ -109,11 +143,19 @@ Devvit.addCustomPostType({
             lives={lives}
             mode={mode}
             streak={streak}
+            storeScore={storeUserScore}
           />
         );
         break;
       case "e":
-        currentPage = <Leaderboard setPage={setPage} />;
+        currentPage = (
+          <Leaderboard
+            leaderboard={leaderboard}
+            myScore={myScore}
+            fetchLeaderboard={fetchLeaderboard}
+            setPage={setPage}
+          />
+        );
         break;
       case "f":
         currentPage = <Credits setPage={setPage} />;

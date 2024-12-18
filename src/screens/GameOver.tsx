@@ -8,6 +8,7 @@ type PageProps = {
   incorrect: number;
   lives: number;
   mode: "timer" | "streak";
+  storeScore: (score: number) => void;
 };
 
 const GameOver = ({
@@ -18,23 +19,49 @@ const GameOver = ({
   streak,
   setPage,
   mode,
+  storeScore,
 }: PageProps) => {
-  // fetch the best score from the redis database
-  // fetch the new rank from the redis database
+  // todo : fetch the best score from the redis database
+  // todo : fetch the new rank from the redis database
   const bestScore = 3151;
   const newRank = 4;
 
+  // todo : store the score in the redis database
+  storeScore(score);
+
   return (
-    <vstack height={100} width={100} alignment="middle center">
-      <vstack height={60} width={100} alignment="middle center">
-        <text size="xxlarge">{`Game Over!`}</text>
+    <vstack height={100} width={100} alignment="middle center" gap="small">
+      <vstack height={70} width={100} alignment="middle center">
+        <text size="xxlarge" style="heading" weight="bold">{`Game Over!`}</text>
+        <spacer size="large" />
         <vstack height={60} width={100} alignment="middle center" gap="small">
           <text
             alignment="center middle"
-            size="xlarge"
+            size="xxlarge"
             weight="bold"
             color="orangered"
           >{`Your Score: ${score}`}</text>
+          <text weight="bold">{`Best score: ${bestScore}`}</text>
+          {mode === "timer" && <text>{`Longest Streak: ${streak}`}</text>}
+          {mode === "streak" && (
+            <vstack alignment="middle center" gap="small">
+              <hstack alignment="middle center" gap="small" width={100}>
+                <icon name="heart-fill" color="red" size="small" />
+                <text weight="bold">{`remaining: ${lives}`}</text>
+              </hstack>
+              <hstack alignment="middle center" gap="small" width={100}>
+                <image url="streak.png" imageHeight={20} imageWidth={20} />
+                <text weight="bold">{`Streak: ${streak}`}</text>
+              </hstack>
+            </vstack>
+          )}
+          {mode === "timer" && (
+            <>
+              <text>{`Correct answers: ${correct}`}</text>
+              <text>{`Wrong answers: ${incorrect}`}</text>
+            </>
+          )}
+          <spacer size="medium" />
           <hstack
             alignment="middle center"
             gap="small"
@@ -49,28 +76,7 @@ const GameOver = ({
               <icon size="small" name="upvote-fill" color="orangered" />
             </hstack>
           </hstack>
-
-          <text>{`Best score: ${bestScore}`}</text>
-          {mode === "timer" && <text>{`Longest Streak: ${streak}`}</text>}
         </vstack>
-        {mode === "streak" && (
-          <vstack alignment="middle center" gap="small">
-            <hstack alignment="middle center" gap="small" width={100}>
-              <icon name="heart-fill" color="red" size="small" />
-              <text weight="bold">{`remaining: ${lives}`}</text>
-            </hstack>
-            <hstack alignment="middle center" gap="small" width={100}>
-              <image url="streak.png" imageHeight={20} imageWidth={20} />
-              <text weight="bold">{`Streak: ${streak}`}</text>
-            </hstack>
-          </vstack>
-        )}
-        {mode === "timer" && (
-          <>
-            <text>{`Correct answers: ${correct}`}</text>
-            <text>{`Wrong answers: ${incorrect}`}</text>
-          </>
-        )}
       </vstack>
       <vstack alignment="middle center" height={30} width={100} gap="small">
         <button

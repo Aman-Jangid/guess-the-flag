@@ -53,17 +53,37 @@ const GameBoard = ({
 
   const endGame = () => {
     setGameOver(true);
+    setOptions([]);
+    setAnswer("");
+    setFlagUrl("");
+    setTimer(0);
     setPage("d");
   };
 
   const initializeOptions = () => {
+    console.log("Initializing options");
     const result = generateOptions(countries, combinationGenerator, endGame);
     if (result) {
+      console.log("Options generated", {
+        answerCountry: result.answerCountry,
+        flagUrl: result.flagUrl,
+        options: result.options,
+      });
       setAnswer(result.answerCountry);
       setFlagUrl(result.flagUrl);
       setOptions(result.options);
+    } else {
+      console.error("Failed to generate options");
+      endGame(); // Graceful fallback if option generation fails
     }
   };
+
+  // Add an interval for streak mode to periodically ensure options are generated
+  useInterval(() => {
+    if (options.length === 0) {
+      initializeOptions();
+    }
+  }, 500).start();
 
   // Handle timer logic for Timer Mode
   if (mode === "timer") {
@@ -126,9 +146,6 @@ const GameBoard = ({
     }
     setTimer(0);
   };
-
-  // Initialize options on first render
-  if (options.length === 0) initializeOptions();
 
   return (
     <vstack
