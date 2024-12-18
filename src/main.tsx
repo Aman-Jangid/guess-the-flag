@@ -2,10 +2,16 @@ import { Devvit, useState } from "@devvit/public-api";
 
 import GameBoard from "./screens/GameBoard.js";
 import Home from "./screens/Home.js";
-import Leaderboard from "./screens/Leaderboard.js";
+// import Leaderboard from "./screens/Leaderboard.js";
+
 import GameOptions from "./screens/GameOptions.js";
 import GameOver from "./screens/GameOver.js";
 import Credits from "./screens/Credits.js";
+import {
+  fetchLeaderboard,
+  storeUserScore,
+} from "./helpers/leaderboardUtils.js";
+import { Leaderboard } from "./screens/Leaderboard.js";
 
 Devvit.configure({
   redditAPI: true,
@@ -58,35 +64,30 @@ Devvit.addCustomPostType({
     const [leaderboard, setLeaderboard] = useState<any[]>([]);
     const [myScore, setMyScore] = useState<any>(0);
 
-    const storeUserScore = async (score: number) => {
-      const { reddit } = _context;
-      const user = await reddit.getCurrentUser();
-      if (user) {
-        const { redis } = _context;
-        await redis.zAdd("leaderboard", {
-          member: user.username,
-          score: score,
-        });
+    // New function to store user score at game over
+    const storeScore = async () => {
+      try {
+        const result = await storeUserScore(
+          _context,
+          score,
+          mode,
+          correct,
+          streak
+        );
+        // Optional: show toast or handle post-score storage logic
+      } catch (error) {
+        console.error("Score storage failed", error);
       }
     };
 
-    const fetchLeaderboard = async () => {
-      const { redis } = _context;
-      const leaderboard = await redis.zRange("leaderboard", 0, 9, {
-        by: "score",
-      });
-      setLeaderboard(leaderboard);
-      await fetchUserScore();
-    };
-
-    const fetchUserScore = async () => {
-      const { reddit } = _context;
-      const user = await reddit.getCurrentUser();
-      if (user) {
-        const { redis } = _context;
-        const score = await redis.zScore("leaderboard", user.username);
-        setMyScore(score);
-        console.log(score);
+    // New function to update leaderboard
+    const updateLeaderboard = async () => {
+      try {
+        const { leaderboard, myScore } = await fetchLeaderboard(_context);
+        setLeaderboard(leaderboard);
+        setMyScore(myScore);
+      } catch (error) {
+        console.error("Leaderboard fetch failed", error);
       }
     };
 
@@ -143,7 +144,7 @@ Devvit.addCustomPostType({
             lives={lives}
             mode={mode}
             streak={streak}
-            storeScore={storeUserScore}
+            storeScore={storeScore}
           />
         );
         break;
@@ -152,7 +153,7 @@ Devvit.addCustomPostType({
           <Leaderboard
             leaderboard={leaderboard}
             myScore={myScore}
-            fetchLeaderboard={fetchLeaderboard}
+            fetchLeaderboard={updateLeaderboard}
             setPage={setPage}
           />
         );

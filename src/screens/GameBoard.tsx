@@ -112,14 +112,8 @@ const GameBoard = ({
   };
 
   const initializeOptions = () => {
-    console.log("Initializing options");
     const result = generateOptions(countries, combinationGenerator, endGame);
     if (result) {
-      console.log("Options generated", {
-        answerCountry: result.answerCountry,
-        flagUrl: result.flagUrl,
-        options: result.options,
-      });
       setAnswer(result.answerCountry);
       setFlagUrl(result.flagUrl);
       setOptions(result.options);
