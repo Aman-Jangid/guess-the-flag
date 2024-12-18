@@ -28,7 +28,7 @@ export function Leaderboard({
     <vstack
       width="100%"
       height="100%"
-      alignment="center"
+      alignment="center middle"
       gap="small"
       backgroundColor="#0B1315"
     >

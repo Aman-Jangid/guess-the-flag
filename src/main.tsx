@@ -54,7 +54,7 @@ Devvit.addCustomPostType({
   height: "tall",
   description: "A fun game to guess the flags of countries.",
   render: (_context) => {
-    const [page, setPage] = useState<string>("d");
+    const [page, setPage] = useState<string>("c");
     const [mode, setMode] = useState<optionType>("streak");
     const [score, setScore] = useState<number>(0);
     const [streak, setStreak] = useState<number>(0);
@@ -137,6 +137,7 @@ Devvit.addCustomPostType({
       case "d":
         currentPage = (
           <GameOver
+            context={_context}
             setPage={setPage}
             score={score}
             correct={correct}

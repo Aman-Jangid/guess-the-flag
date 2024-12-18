@@ -16,6 +16,7 @@ const GameOptions = ({ startGame, mode, setMode, setPage }: PageProps) => {
       <text size="large" weight="bold">
         Select game mode
       </text>
+      <spacer height={2} />
       <GameModeSelector mode={mode} setMode={setMode} />
       <spacer height={2} />
       <NavigationButtons startGame={startGame} setPage={setPage} />

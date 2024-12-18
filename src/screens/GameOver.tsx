@@ -1,6 +1,7 @@
-import { Devvit } from "@devvit/public-api";
+import { Devvit, useState } from "@devvit/public-api";
 
 type PageProps = {
+  context: Devvit.Context;
   setPage: (page: string) => void;
   score: number;
   streak: number;
@@ -12,6 +13,7 @@ type PageProps = {
 };
 
 const GameOver = ({
+  context,
   score,
   correct,
   incorrect,
@@ -21,13 +23,45 @@ const GameOver = ({
   mode,
   storeScore,
 }: PageProps) => {
-  // todo : fetch the best score from the redis database
-  // todo : fetch the new rank from the redis database
-  const bestScore = 3151;
-  const newRank = 4;
+  const [bestScore, setBestScore] = useState<number>(0);
+  const [newRank, setNewRank] = useState<number>(0);
+  const [username, setUsername] = useState<string>("");
 
-  // todo : store the score in the redis database
-  storeScore(score);
+  const fetchGameStats = async () => {
+    try {
+      // Store the current score
+      await storeScore(score);
+
+      // Fetch best score from Redis
+      const storedBestScore =
+        (await context.kvStore.get<number>("bestScore")) || 0;
+      const currentBestScore = Math.max(storedBestScore, score);
+
+      // Update best score if current score is higher
+      if (currentBestScore > storedBestScore) {
+        await context.kvStore.put("bestScore", currentBestScore);
+      }
+      setBestScore(currentBestScore);
+
+      // Fetch or calculate rank
+      const userScores = await context.kvStore.list();
+      const sortedScores = userScores
+        .map((key) => parseInt(key.split(":")[1], 10))
+        .sort((a, b) => b - a);
+
+      const userRank = sortedScores.indexOf(score) + 1;
+      setNewRank(userRank);
+
+      // Fetch username (assumes it's stored separately)
+      const storedUsername =
+        (await context.kvStore.get<string>("username")) || "Strking-Coyote123";
+      setUsername(storedUsername);
+    } catch (error) {
+      console.error("Error fetching game stats:", error);
+    }
+  };
+
+  fetchGameStats();
 
   return (
     <vstack height={100} width={100} alignment="middle center" gap="small">
@@ -70,7 +104,7 @@ const GameOver = ({
             width={100}
           >
             <text>{`Rank: ${newRank}`}</text>
-            <text color="#0045AB">Strking-Coyote123</text>
+            <text color="#0045AB">{username}</text>
             <hstack alignment="middle center" padding="small" gap="small">
               <text>rank up </text>
               <icon size="small" name="upvote-fill" color="orangered" />
