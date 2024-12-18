@@ -23,7 +23,58 @@ type PageProps = {
   setLives: (lives: number | ((prev: number) => number)) => void;
 };
 
-const maxStreak = 254;
+// Scoring Constants
+const BASE_POINTS = 10;
+const MAX_SPEED_BONUS = 5;
+const MAX_STREAK_BONUS = 10;
+const INITIAL_LIVES = 3;
+const INITIAL_TIME = 60;
+
+const calculateScoreMultiplier = (streak: number, timer: number): number => {
+  // Streak multiplier (increases with consecutive correct answers)
+  const streakMultiplier = Math.min(1 + Math.floor(streak / 5), 3);
+
+  // Speed multiplier (rewards quick answers)
+  const speedMultiplier =
+    timer < 2 ? 2 : timer < 5 ? 1.5 : timer < 10 ? 1.25 : 1;
+
+  return streakMultiplier * speedMultiplier;
+};
+
+const handleScoring = (
+  mode: "timer" | "streak",
+  setScore: (update: (prev: number) => number) => void,
+  streak: number,
+  timer: number,
+  timeLeft?: number
+): void => {
+  if (mode === "timer") {
+    // Timer Mode Scoring
+    let points = BASE_POINTS;
+
+    // Speed bonus (max 5 additional points)
+    const speedBonus = Math.max(0, MAX_SPEED_BONUS - timer);
+    points += speedBonus;
+
+    // Streak bonus (if near max streak)
+    if (streak > 200) {
+      points += Math.min(streak - 200, MAX_STREAK_BONUS);
+    }
+
+    // Time bonus: extra points based on remaining time
+    if (timeLeft && timeLeft > 30) {
+      points += Math.floor(timeLeft / 10);
+    }
+
+    setScore((prev) => prev + points);
+  } else {
+    // Streak Mode Scoring
+    const multiplier = calculateScoreMultiplier(streak, timer);
+    const points = Math.round(BASE_POINTS * multiplier);
+
+    setScore((prev) => prev + points);
+  }
+};
 
 const GameBoard = ({
   setPage,
@@ -39,14 +90,14 @@ const GameBoard = ({
   setStreak,
   streak,
 }: PageProps) => {
-  const [timeLeft, setTimeLeft] = useState(60); // 1-minute timer
+  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME); // 1-minute timer
   const [timer, setTimer] = useState<number>(0);
   const [options, setOptions] = useState<string[]>([]); // Shuffled options
   const [answer, setAnswer] = useState<string>(""); // Correct answer
   const [flagUrl, setFlagUrl] = useState<string>(""); // Flag image URL
 
   const [gameOver, setGameOver] = useState<boolean>(false);
-  const [multiplier, setMultiplier] = useState<number>(1);
+  const [longestStreak, setLongestStreak] = useState<number>(0);
 
   const arr = Array.from({ length: 254 }, (_, i) => i);
   const combinationGenerator = new UniqueCombinationGenerator(arr);
@@ -100,50 +151,56 @@ const GameBoard = ({
   // Handle option click
   const handleOptionClick = (option: string) => {
     if (option === answer) {
-      // score counting in timer mode
-      if (mode === "timer") {
-        if (streak === maxStreak) {
-          setScore((prev: number) => prev + timeLeft * 2);
-        }
-        setScore((prev: number) => prev + 10);
-        setTimeLeft((prev) => prev + 3);
-      }
-      // score counting in streak mode
-      else {
-        if (streak >= 2) {
-          if (timer < 2) {
-            setScore((prev: number) => prev + 10 * 2);
-          }
-          if (timer >= 2) {
-            setScore((prev: number) => prev + 10 * 1.5);
-          }
-          if (timer >= 5) {
-            setScore((prev: number) => prev + 10 * 1.25);
-          } else {
-            setMultiplier((prev) => prev + 1);
-            setScore((prev: number) => prev + 10 * multiplier);
-          }
-        }
-        setScore((prev: number) => prev + 10);
+      // New scoring system
+      handleScoring(
+        mode,
+        setScore,
+        streak,
+        timer,
+        mode === "timer" ? timeLeft : undefined
+      );
+
+      // Update streak and correct answers
+      const newCorrect = correct + 1;
+      setCorrect(() => newCorrect);
+
+      // Update longest streak
+      const newStreak = streak + 1;
+      setStreak(() => newStreak);
+
+      // Track longest streak
+      if (newStreak > longestStreak) {
+        setLongestStreak(newStreak);
       }
 
-      setCorrect((prev) => prev + 1);
-      setStreak((prev) => prev + 1);
+      if (mode === "timer") {
+        setTimeLeft((prev) => Math.min(prev + 3, INITIAL_TIME));
+      }
+
       initializeOptions();
     } else {
+      // Error handling logic
       if (mode === "streak") {
-        if (lives <= 0) {
+        // Ensure lives never go below 0
+        const newLives = Math.max(0, lives - 1);
+
+        if (newLives === 0) {
           endGame();
         }
+
+        setLives(() => newLives);
         setStreak(0);
-        setLives((prev) => prev - 1);
       } else if (mode === "timer") {
-        setScore((prev: number) => prev - 5);
-        setTimeLeft((prev) => prev - 3);
+        setScore((prev) => prev - 5);
+        // Prevent time from going negative
+        setTimeLeft((prev) => Math.max(0, prev - 3));
         setIncorrect((prev) => prev + 1);
-        initializeOptions();
       }
+
+      initializeOptions();
     }
+
+    // Reset timer after each answer
     setTimer(0);
   };
 
@@ -165,7 +222,7 @@ const GameBoard = ({
         gap="small"
       >
         {mode === "streak" ? (
-          <StreakStats streak={streak} lives={lives} />
+          <StreakStats streak={streak} lives={Math.max(0, lives)} />
         ) : (
           <TimerStats
             correct={correct}
