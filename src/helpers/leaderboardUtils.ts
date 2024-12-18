@@ -97,7 +97,7 @@ export async function fetchLeaderboard(context: Devvit.Context) {
     // Fetch global leaderboard
     const leaderboardEntries = await redis.zRange(LEADERBOARD_KEY, 0, -1, {
       by: "score",
-      reverse: false,
+      reverse: true,
     });
 
     const leaderboard = leaderboardEntries
