@@ -14,15 +14,22 @@ export function Leaderboard({
   const [activeMode, setActiveMode] = useState<"timer" | "streak">("timer");
 
   // Filter leaderboard by active mode
-  const filteredLeaderboard = leaderboard
-    .filter((entry) => entry.mode === activeMode)
-    .sort((a, b) => b.score - a.score)
-    .map((entry, index) => ({
-      ...entry,
-      rank: index + 1,
-    }));
+  // const filteredLeaderboard = leaderboard
+  //   .filter((entry) => entry.mode === activeMode)
+  //   .sort((a, b) => b.score - a.score)
+  //   .map((entry, index) => ({
+  //     ...entry,
+  //     rank: index + 1,
+  //   }));
 
-  fetchLeaderboard();
+  // fetchLeaderboard();
+
+  // put dummy data in filteredLeaderboard
+  const filteredLeaderboard = [
+    { rank: 1, username: "Striking-Coyote4064", score: 204 },
+    { rank: 2, username: "VisibleRelief8247", score: 90 },
+    { rank: 3, username: "Afraid_Rub_3855", score: 24 },
+  ];
 
   return (
     <vstack

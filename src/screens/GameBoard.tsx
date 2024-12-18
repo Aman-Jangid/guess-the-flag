@@ -183,7 +183,7 @@ const GameBoard = ({
         }
 
         setLives(() => newLives);
-        setStreak(0);
+        // setStreak(0);
       } else if (mode === "timer") {
         setScore((prev) => prev - 5);
         // Prevent time from going negative

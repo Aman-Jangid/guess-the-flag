@@ -103,11 +103,11 @@ const GameOver = ({
             border="thin"
             width={100}
           >
-            <text>{`Rank: ${newRank}`}</text>
+            <text>{`Rank: No rank yet!`}</text>
             <text color="#0045AB">{username}</text>
             <hstack alignment="middle center" padding="small" gap="small">
-              <text>rank up </text>
-              <icon size="small" name="upvote-fill" color="orangered" />
+              {/* <text>rank up </text> */}
+              {/* <icon size="small" name="upvote-fill" color="orangered" /> */}
             </hstack>
           </hstack>
         </vstack>
